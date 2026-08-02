@@ -1,6 +1,7 @@
 # Complete Docker Course - From BEGINNER to PRO! (Learn Containers)
-#https://www.youtube.com/watch?v=RqTEHSBrYFw
-#https://github.com/sidpalas/devops-directive-docker-course
+Source:
+https://www.youtube.com/watch?v=RqTEHSBrYFw
+https://github.com/sidpalas/devops-directive-docker-course
 
 ![alt text](image.png)
 
@@ -37,14 +38,43 @@ key difference VMs and containers: VMs run their own copy of the Linux kernel. T
 ![Containers characteristics](image-7.png)
 Small blast radius, but not quite as much as a virtual machine.
 
+Bit of inception:
+host machine with virtual machines and then containers on each. Typical Cloud set-up combining all three.
+For managment across those VMs, is where K8S, Nomad, and Docker Swarm comes in for orchestration.
+
+### Tradeoffs
+![tradeoffs](image-8.png)
 
 
 
 ## 2. Technology overview
 
 ### Containers
+
+
+Dive into foundational Linux components that allow Docker containers to exist:
+1. Namespaces: "wraps a global system resource in an abstraction that mkes it appear to the processes within the namespace that they have their own isolated instance of the global resource." Changes to the global res are visible to other processes in the same ns, but are invisible to other processes. E.g.: PID process, User namespace process --> map one uer within the container to another user in the host system (run as root user in container with proper config can map to non-root user outside of container).
+
+2. Control Groups (cgroups): "a Linux kernel feature which allows processes to be organized into hierarchical groups whose usage of various types of resources can then be limited and monitored." --> terminal to list all cgroups: cat /proc/cgroups. E.g. of cgroups: cpu.shares , memory.limit_in_bytes, and blkio.throttle.read_bps_device. This allows to prevent noisy neighbour problem where one app is very resource hungry and starves the other apps.
+
+3. Union Filesystem: Docker specifically uses Union Mount Filesystems (overlayfs); "allows files and directories of separate file systems, known as branches, to be transparently overlaid, forming a single coherent file system. Contents of directories which have the same path within the merged branches will be seen togheter in a single merged directory, within the new, virtual filesystem." --> You can have a lower layer filesys/directory and an upper layer which you can then see the merged view of with this overlayfs. Upper layer takes precedence over lower, so the version of a file in upper layer will be shown instead of the different version in lower layer, same with deleted files in upper that still exist in lower layer. The benefit / why it's essential to the Docker technology: this layered approach allows sharing lower layers and cache them which reduces amount of data needing to be transferred and stored for containers images because many images can share a same lower layer while only adjusting a few upper layer files when getting a container on a system AND allocate less space in case we are running multiple copies of the same container.
+
+
 ### Docker
 
+So eventhough you can interact and set-up these components yourself, these three technologies combined into Docker makes it way more userfriendly by not needing to know all commands to create cgroups and move processes into them, or set-up namespaces and block off the different portions of our system.
+--> Docker offers all of this with Docker Desktop app and a few commands we will look at later.
+
+
+![Docker Desktop Architecture](image-9.png)
+
+Docker Daemon (dockerd) manages container objects as well as networking, volumes etc. all within this server host application. So your commands you enter into the Docker CLI communicate with the API in the Linux machine in which the Docker Daemon executes all the different commands. --> the "Docker Enginer" = Docker CLI + Docker Daemon and Docker API (= opensource core of Docker).
+Optional: install K8S cluster.
+For MacOS: it uses a Linux VM
+For Windows: WSL or HyperV
+Registry: place to save and share your images, e.g.: DockerHub.
+
+If all you do is build, run and interact with containers, only the Docker Engine might be enough. However, in this course we are using Docker for development so we will install Docker Desktop.
 
 
 ## 3. Installation/Set-up & Hello World
