@@ -111,7 +111,16 @@ SELECT * FROM information_schema.tables
 
 
 
-## 4. Using 3rd party containeres
+## 4. Using 3rd party containers
+
+DockerHub is container image repo with publicly available premade containers by the community.
+
+### Understanding data within containers
+By default all data created or modified in containers is ephemeral.
+
+If some data should be present every time a container image is run (e.g. dependency), it should be built into the image itself.
+
+If data is generation by the application that needs to be persisted, a Volume should be used to store that outside of the ephemeral container filesystem.
 
 
 ## 5. Demo Application
