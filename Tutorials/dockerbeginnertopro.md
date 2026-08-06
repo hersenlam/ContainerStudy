@@ -124,7 +124,7 @@ If data is generation by the application that needs to be persisted, a Volume sh
 With a **Volume Mount**, will designate a place within the Docker Linux VM, outside of the Docker container, @var/lib/docker/volumes/. The lifecycle of this volume can be managed separate from container.
 With a **Bind Mount**, we are adding the Host Filesystem into the container at runtime (some path). So now, when I adjust files/data in that path, the changes will show up in the host filesystem.
 Both are valid options, Docker recommends using Volume Mounts by default, one reason for this is that Bind Mount is crossing the boundary from VM to Host Machine and performance can be much lower. A reason to do use Bind Mound is when you want to be able to see the data that is being modified. Later in course we will use Bind Mount to upload source code and maintain the changes made.
-sxdsd
+
 
 
 ## 5. Demo Application
