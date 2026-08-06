@@ -110,35 +110,6 @@ SELECT * FROM information_schema.tables
 `
 
 
-After install, open and go into settings --> resources --> limit accordingly to your machine.
-Following command will show all possibile Docker COMMANDs:
-
-`
-docker
-`
-
-`
-docker run docker/whalesay cowsay "🐷 wassup"
-`
-
-docker whalesay isn't supported anymore sadly. However, it would say that it can't find the image locally and start downloading it from DockerHub. Then you see several lines being downloaded which each correspond to one of the layers of the overlay filesystem. Downloads all those images to the host system so we can run a container from the image.
-
-Something more useful: need pgql 
-Password env var is necessary for container to run. Apart from that also publish port 5432 since otherwise we have no way of connecting to the isolated container running pgql. Publish says to connect local host port to that port on container.
-
-`
-docker run --env POSTGRES_PASSWORD= --publish 5432:5432 postgres:18.4-alpine
-`
-
-https://www.pgadmin.org/download/
-
-check in PGAdmin that you see the pgqlDB in a docker container added. Add the Docker pgqlDB instance by adding a server with 0.0.0.0 and your added password. Then execute following query:
-
-`
-SELECT * FROM information_schema.tables
-`
-
-
 
 ## 4. Using 3rd party containers
 
@@ -150,6 +121,10 @@ By default all data created or modified in containers is ephemeral.
 If some data should be present every time a container image is run (e.g. dependency), it should be built into the image itself.
 
 If data is generation by the application that needs to be persisted, a Volume should be used to store that outside of the ephemeral container filesystem.
+With a **Volume Mount**, will designate a place within the Docker Linux VM, outside of the Docker container, @var/lib/docker/volumes/. The lifecycle of this volume can be managed separate from container.
+With a **Bind Mount**, we are adding the Host Filesystem into the container at runtime (some path). So now, when I adjust files/data in that path, the changes will show up in the host filesystem.
+Both are valid options, Docker recommends using Volume Mounts by default, one reason for this is that Bind Mount is crossing the boundary from VM to Host Machine and performance can be much lower. A reason to do use Bind Mound is when you want to be able to see the data that is being modified. Later in course we will use Bind Mount to upload source code and maintain the changes made.
+
 
 
 ## 5. Demo Application
